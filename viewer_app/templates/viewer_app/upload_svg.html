@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'viewer_app/styles.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <title>Cargar SVG</title>
+</head>
+<body>
+    <h1 class="container-header">Spiegeler</h1>
+
+    <div class="button-container-cols">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="upload-section">
+                <label class="button" for="file-upload-svg">Seleccionar SVG</label>
+                <input type="file" id="file-upload-svg" name="svg_file" accept=".svg" required style="display: none;" onchange="updateFileName()">
+                <span id="file-name" class="label-text">Ningún archivo seleccionado</span>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" name="view_svg" class="button">Visualizar SVG</button>
+            </div>
+        </form>
+    </div>
+    <!--<h1 class="container-header">Matings de una carpeta de SVGs</h1>
+    <div class="button-container-cols">
+        <form method="post" enctype="multipart/form-data" action="{% url 'process_svg_folder' %}">
+            {% csrf_token %}
+            <label class="button" for="file-upload-folder">Seleccionar Carpeta</label>
+            <input type="file" id="file-upload-folder" name="svg_files" webkitdirectory directory multiple required style="display: none;" onchange="updatePathName()">
+            <span id="selectedPath" class="label-text">Ninguna carpeta seleccionada</span>
+            <div style="margin-top: 20px; text-align: center;">
+                <button type="submit" class="button" onclick="changeUploadButton()">Procesar SVGs</button>
+            </div>
+        </form>
+        <form method="POST" action="{% url 'open_file_explorer' %}">
+            {% csrf_token %}
+            <div class="label-text-container">
+                <span id="processedFiles" class="label-text">{{ msg|safe }}</span>
+            </div>
+            <div>
+                <input type="hidden" name="msg" value="{{ msg }}">
+                <button type="submit" name="open_folder" class="button">Abrir Carpeta Matings</button>
+            </div>
+        </form>
+    </div>-->
+    
+    <script src="{% static 'viewer_app/js/file_selector.js' %}"></script>
+    
+    <script>
+        function updateFileName() {
+            const input = document.getElementById('file-upload-svg');
+            const fileNameDisplay = document.getElementById('file-name');
+            if (input.files.length > 0) {
+                fileNameDisplay.textContent = input.files[0].name; // Muestra el nombre del archivo seleccionado
+                console.log(input.files[0].name); // Muestra el nombre del archivo seleccionado
+            } else {
+                fileNameDisplay.textContent = 'Ningún archivo seleccionado'; // Mensaje por defecto
+            }
+        }
+
+        function updatePathName() {
+            const input = document.getElementById('file-upload-folder');
+            const selectedPathDisplay = document.getElementById('selectedPath');
+            if (input.files.length > 0) {
+                // Obtener el nombre de la carpeta seleccionada
+                const folderPath = input.files[0].webkitRelativePath.split('/')[0];
+                selectedPathDisplay.textContent = folderPath;
+                console.log(folderPath); // Muestra el nombre de la carpeta seleccionada
+            } else {
+                selectedPathDisplay.textContent = 'Ninguna carpeta seleccionada'; // Mensaje por defecto
+            }
+        }
+
+        function changeUploadButton() {
+            const input = document.getElementById('file-upload-folder');
+            // Solo se procesa si se han seleccionado archivos para procesar
+            if (input.files.length > 0) {
+                const uploadText = document.getElementById('processedFiles');
+                uploadText.textContent = 'Procesando...';
+            } else {
+                uploadText.textContent = settings.MSG_NOT_PROC;
+            }
+        }
+    </script>
+</body>
+</html>

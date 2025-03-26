@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'viewer_app/styles.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <title>Mostrar SVG</title>
+</head>
+<body>
+    {% if file_url %}
+        <div class="button-container-cols compact-tools">
+            <div>
+                <span class="label-text">
+                    {% if '_mating' in file_name %}
+                        Mating de {{ orig_name }}
+                    {% else %}
+                        Original de {{ orig_name }}
+                    {% endif %}
+                </span>
+
+                <div class="button-container-rows compact-buttons">
+                    <div class="controls">
+                        <span class="zoom-label">Zoom</span>
+                        <button class="button small" id="zoomIn">+</button>
+                        <button class="button small" id="zoomOut">-</button>
+                    </div>
+
+                    <form method="POST" action="{% url 'process_svg' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="file_url" value="{{ file_url }}">
+                        <input type="hidden" name="orig_name" value="{{ orig_name }}">
+                        <button type="submit" class="button small">
+                            {% if '_mating' in file_name %}Volver al Original{% else %}Generar Mating{% endif %}
+                        </button>
+                    </form>
+
+                    <form action="/ConnectorMatingViewer" method="get">
+                        <button type="submit" class="button small">Volver al menú</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-container" id="image-container">
+            <img id="zoomable-image" src="{{ file_url }}" alt="SVG Cargado" class="svg-image" ondblclick="openFullscreen(this)" onclick="startMoving(event)">
+        </div>        
+
+        <div id="fullscreenView" class="fullscreen">
+            <span class="close" onclick="closeFullscreen()">&times;</span>
+            <img id="fullscreenImage" ondblclick="closeFullscreen()" src="">
+        </div>     
+    {% else %}
+        <p>No se ha seleccionado ningún archivo SVG.</p>
+    {% endif %}
+
+    <script name='zoom-manager'>
+        const img = document.getElementById('zoomable-image');
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+
+        let scale = 1;
+        let isDragging = false;
+        let isScaled = false;
+        let startX, startY, initialX, initialY;
+
+        // Función de zoom
+        function zoom(scaleFactor) {
+        scale *= scaleFactor;
+        if (scale === 1) {
+            isScaled = false;
+        } else {
+            isScaled = true;
+        }
+        img.style.transform = `scale(${scale})`;
+        }
+
+        // Zoom usando los botones
+        zoomInBtn.addEventListener('click', () => zoom(1.1));
+        zoomOutBtn.addEventListener('click', () => zoom(0.9));
+
+        // Zoom usando el scroll del ratón
+        document.getElementById('image-container').addEventListener('wheel', function (e) {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+            zoom(1.1); // zoom in
+        } else {
+            zoom(0.9); // zoom out
+        }
+        });
+
+        // Funcionalidad para arrastrar la imagen
+        function startMoving(e) {
+            if (isScaled){
+                if (!isDragging){
+                    isDragging = true;
+                    startX = e.pageX - img.style.getPropertyValue('offsetLeft');
+                    startY = e.pageY - img.style.getPropertyValue('offsetTop');
+                    img.style.cursor = 'grabbing';
+                } else {
+                    endMoving();
+                }
+            }           
+        }
+
+        function endMoving(event) {
+            if (isScaled){
+                isDragging = false;
+                img.style.cursor = 'grab';
+            }
+        }
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && isScaled) {
+                img.style.left = `${e.pageX - startX}px`;
+                img.style.top = `${e.pageY - startY}px`;
+            }
+        });
+    </script>
+    <script name='fullscreen-manager'>    
+        const fullscreenView = document.getElementById("fullscreenView");
+        const fullscreenImage = document.getElementById("fullscreenImage");
+
+        // Añadir event listener para la tecla Escape
+        document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeFullscreen();
+                }
+        });
+        
+        function openFullscreen(img) {
+            fullscreenImage.src = img.src;
+            fullscreenView.style.display = "block";
+        }
+
+        function closeFullscreen() {
+            fullscreenView.style.display = "none";
+        }
+    </script>
+</body>
+</html>
