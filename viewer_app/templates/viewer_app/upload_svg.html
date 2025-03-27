@@ -15,7 +15,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="upload-section">
+            <div class="inputs-section">
                 <label class="button" for="file-upload-svg">Seleccionar SVG</label>
                 <input type="file" id="file-upload-svg" name="svg_file" accept=".svg" required style="display: none;" onchange="updateFileName()">
                 <span id="file-name" class="label-text">Ningún archivo seleccionado</span>
@@ -26,28 +26,6 @@
             </div>
         </form>
     </div>
-    <!--<h1 class="container-header">Matings de una carpeta de SVGs</h1>
-    <div class="button-container-cols">
-        <form method="post" enctype="multipart/form-data" action="{% url 'process_svg_folder' %}">
-            {% csrf_token %}
-            <label class="button" for="file-upload-folder">Seleccionar Carpeta</label>
-            <input type="file" id="file-upload-folder" name="svg_files" webkitdirectory directory multiple required style="display: none;" onchange="updatePathName()">
-            <span id="selectedPath" class="label-text">Ninguna carpeta seleccionada</span>
-            <div style="margin-top: 20px; text-align: center;">
-                <button type="submit" class="button" onclick="changeUploadButton()">Procesar SVGs</button>
-            </div>
-        </form>
-        <form method="POST" action="{% url 'open_file_explorer' %}">
-            {% csrf_token %}
-            <div class="label-text-container">
-                <span id="processedFiles" class="label-text">{{ msg|safe }}</span>
-            </div>
-            <div>
-                <input type="hidden" name="msg" value="{{ msg }}">
-                <button type="submit" name="open_folder" class="button">Abrir Carpeta Matings</button>
-            </div>
-        </form>
-    </div>-->
     
     <script src="{% static 'viewer_app/js/file_selector.js' %}"></script>
     

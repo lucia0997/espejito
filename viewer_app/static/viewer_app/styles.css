@@ -27,7 +27,7 @@ h1.container-header {
     width: 25%;
 }
 
-.upload-section {
+.inputs-section {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,24 +37,23 @@ h1.container-header {
 .submit-section {
     margin-top: 10px;
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
+    justify-content: center;
 }
 
 .button {
     background-color: #00205b;
     color: white;
     border: none;
-    padding: 6px 14px;       /* Menos alto */
+    padding: 6px 14px;
     border-radius: 6px;
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    min-height: unset;       /* Elimina min-height si la tenía */
-    min-width: unset;        /* Elimina min-width si la tenía */
-    height: 32px;            /* Fija una altura más baja */
-    display: flex;
-    align-items: center;     /* Centra verticalmente */
-    justify-content: center; /* Centra horizontalmente */
+    min-height: unset;
+    min-width: unset;
+    height: 32px; 
+    align-items: center;
+    justify-content: center;
     text-align: center;
 }
 
