@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from conn_project.settings import SERVER_NGNIX
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('viewer_app.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    path(SERVER_NGNIX + 'admin/', admin.site.urls),
+    path(SERVER_NGNIX + '', include('viewer_app.urls')),
+] + static(SERVER_NGNIX + settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
